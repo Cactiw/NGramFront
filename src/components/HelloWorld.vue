@@ -17,6 +17,12 @@
         </div>
       </n-grid-item>
 
+      <n-grid-item class="mt-2" :span="12">
+        <div class="items-center">
+          <Spellcheck v-model:text="textRef"/>
+        </div>
+      </n-grid-item>
+
     </n-grid>
 
   </n-space>
@@ -30,22 +36,26 @@ import {NCard, NH5, NText, NUpload, NSpace, NButton, NInput, NGrid, NGridItem, N
 import ModelSetupModalComponent from "@/components/ModelSetupModalComponent";
 import {h, inject, ref} from "vue";
 import axios from "axios";
+import Spellcheck from "@/components/Spellcheck";
 
 export default {
   name: 'HelloWorld',
   components: {
+    Spellcheck,
     ModelSetupModalComponent,
     NCard, NH5, NText, NUpload, NSpace, NButton, NInput, NGrid, NGridItem, NAutoComplete
   },
   setup() {
     const defaultURL = inject('defaultURL')
 
+    const textRef = ref("")
     const modelSetupRef = ref(null)
 
     const autoCompleteOptions = ref([])
     const autoCompleteLoading = ref(false)
 
     async function handleAutocompleteUpdate(text) {
+      textRef.value = text
       if (!text) {
         autoCompleteOptions.value = []
         return
@@ -54,7 +64,7 @@ export default {
 
       try {
         const res = await axios.get(`${defaultURL}/api/getAutocomplete`, {params: {
-            start_string: text
+            start_string: text.toLowerCase()
           }})
         autoCompleteOptions.value = res.data
         console.log(res.data)
@@ -73,7 +83,7 @@ export default {
     }
 
     return {
-      modelSetupRef, autoCompleteOptions, autoCompleteLoading, handleAutocompleteUpdate, renderLabel
+      modelSetupRef, autoCompleteOptions, autoCompleteLoading, handleAutocompleteUpdate, renderLabel, textRef
     }
   }
 }
