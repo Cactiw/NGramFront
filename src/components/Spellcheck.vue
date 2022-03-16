@@ -1,7 +1,9 @@
 <template>
   <n-button :loading="loading" @click="spellcheck">Spellcheck</n-button>
   <n-collapse-transition :show="showResults">
-    {{results}}
+    <n-space vertical>
+      <n-p v-html="result[0].join(' ')" v-for="result in results"></n-p>
+    </n-space>
   </n-collapse-transition>
 </template>
 
@@ -14,7 +16,7 @@ import {
   NGrid,
   NGridItem,
   NH5,
-  NInput,
+  NInput, NList, NP,
   NSpace,
   NText,
   NUpload
@@ -26,7 +28,8 @@ export default {
   name: "Spellcheck",
   props: ['text'],
   components: {
-    NCard, NH5, NText, NUpload, NSpace, NButton, NInput, NGrid, NGridItem, NAutoComplete, NCollapseTransition
+    NCard, NH5, NP, NText, NUpload, NSpace, NButton, NInput, NGrid, NGridItem, NAutoComplete, NCollapseTransition,
+    NList
   },
   setup(props) {
     const defaultURL = inject('defaultURL')
