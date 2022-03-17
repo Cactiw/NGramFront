@@ -2,7 +2,12 @@
   <n-modal style="max-width: 40%" class="bg-white" preset="card" title="Параметры модели" v-model:show="show">
     <n-space vertical align="center">
       <n-h5>Всего слов: {{wordsCount}}</n-h5>
-      <n-upload :action="defaultURL + `/api/addFile`" @finish="afterUpload" @before-upload="beforeUpload" @error="fileLoading = false">
+      <n-space>
+        <n-switch v-model:value="useSmooth"></n-switch>
+        <n-p>Сглаживание</n-p>
+      </n-space>
+      <n-upload
+          :action="defaultURL + `/api/addFile?&use_smooth=${useSmooth}`" @finish="afterUpload" @before-upload="beforeUpload" @error="fileLoading = false">
         <n-button ghost :loading="fileLoading" type="info">Добавить файл</n-button>
       </n-upload>
       <n-button ghost :loading="deleteLoading" type="error" @click="clearModel">Очистить модель</n-button>
@@ -12,13 +17,13 @@
 
 <script>
 import {inject, ref} from "vue";
-import {NModal, NCard, NH5, NUpload, NButton, NSpace} from "naive-ui";
+import {NModal, NCard, NH5, NUpload, NButton, NSpace, NCheckbox, NRadio, NSwitch, NP} from "naive-ui";
 import axios from "axios";
 
 export default {
   name: "ModelSetupModalComponent",
   components: {
-    NModal, NCard, NH5, NUpload, NButton, NSpace
+    NModal, NCard, NH5, NUpload, NButton, NSpace, NCheckbox, NSwitch, NP
   },
   setup() {
     const defaultURL = inject('defaultURL')
@@ -27,6 +32,8 @@ export default {
     const wordsCount = ref(0)
     const fileLoading = ref(false)
     const deleteLoading = ref(false)
+
+    const useSmooth = ref(false)
 
     async function showModal() {
       this.show = true
@@ -55,6 +62,7 @@ export default {
     }
 
     async function clearModel() {
+      console.log(useSmooth.value)
       deleteLoading.value = true
       try {
         const res = await axios.post(`${defaultURL}/api/clearModel`)
@@ -68,7 +76,7 @@ export default {
 
     return {
       show, showModal, defaultURL, wordsCount, countWords, beforeUpload, fileLoading, afterUpload, deleteLoading,
-      clearModel
+      clearModel, useSmooth
     }
   }
 }
