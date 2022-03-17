@@ -1,4 +1,4 @@
-  <template>
+<template>
   <n-modal style="max-width: 40%" class="bg-white" preset="card" title="Параметры модели" v-model:show="show">
     <n-space vertical align="center">
       <n-h5>Всего слов: {{wordsCount}}</n-h5>

@@ -23,10 +23,14 @@
         </div>
       </n-grid-item>
 
+      <n-grid-item class="mt-2" :span="12">
+        <div class="items-center">
+          <n-button @click="modelSetupRef.showModal()">Модель</n-button>
+        </div>
+      </n-grid-item>
     </n-grid>
 
   </n-space>
-  <n-button @click="modelSetupRef.showModal()">Модель</n-button>
 
   <ModelSetupModalComponent ref="modelSetupRef"></ModelSetupModalComponent>
 </template>
