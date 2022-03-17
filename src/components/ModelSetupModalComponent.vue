@@ -1,10 +1,11 @@
-<template>
-  <n-modal style="max-width: 40%" preset="card" title="Параметры модели" v-model:show="show">
+  <template>
+  <n-modal style="max-width: 40%" class="bg-white" preset="card" title="Параметры модели" v-model:show="show">
     <n-space vertical align="center">
       <n-h5>Всего слов: {{wordsCount}}</n-h5>
       <n-upload :action="defaultURL + `/api/addFile`" @finish="afterUpload" @before-upload="beforeUpload" @error="fileLoading = false">
-        <n-button :loading="fileLoading" type="info">Добавить файл</n-button>
+        <n-button ghost :loading="fileLoading" type="info">Добавить файл</n-button>
       </n-upload>
+      <n-button ghost :loading="deleteLoading" type="error" @click="clearModel">Очистить модель</n-button>
     </n-space>
   </n-modal>
 </template>
@@ -25,6 +26,7 @@ export default {
     const show = ref(false)
     const wordsCount = ref(0)
     const fileLoading = ref(false)
+    const deleteLoading = ref(false)
 
     async function showModal() {
       this.show = true
@@ -52,10 +54,21 @@ export default {
       return true
     }
 
+    async function clearModel() {
+      deleteLoading.value = true
+      try {
+        const res = await axios.post(`${defaultURL}/api/clearModel`)
+        await countWords()
+      } finally {
+        deleteLoading.value = false
+      }
+    }
+
     countWords().then()
 
     return {
-      show, showModal, defaultURL, wordsCount, countWords, beforeUpload, fileLoading, afterUpload
+      show, showModal, defaultURL, wordsCount, countWords, beforeUpload, fileLoading, afterUpload, deleteLoading,
+      clearModel
     }
   }
 }
